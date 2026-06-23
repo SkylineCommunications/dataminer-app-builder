@@ -10,6 +10,8 @@ This plugin packages a single agent and the skills it needs to scaffold, design,
 
 ## Installation
 
+### VS Code
+
 Open the Command Palette in VS Code (`Ctrl+Shift+P`) and run:
 
 ```
@@ -19,12 +21,22 @@ Chat: Install Plugin From Source
 Then enter the repository URL:
 
 ```
-https://github.com/SkylineCommunications/custom-app-builder-tryout
+https://github.com/SkylineCommunications/custom-app-builder
+```
+
+### Copilot CLI
+
+Install the plugin:
+
+```shell
+/plugin install https://github.com/SkylineCommunications/custom-app-builder
 ```
 
 ---
 
 ## Updating
+
+### VS Code
 
 VS Code checks for plugin updates automatically every 24 hours. To update manually, open the Command Palette in VS Code (`Ctrl+Shift+P`) and run:
 
@@ -33,6 +45,12 @@ Extensions: Check for Extension Updates
 ```
 
 Updates are applied when a new `version` is published in `plugin.json`. After updating, reload the window to activate the latest skills and agent.
+
+### Copilot CLI
+
+```shell
+/plugin update custom-app-builder
+```
 
 ---
 
