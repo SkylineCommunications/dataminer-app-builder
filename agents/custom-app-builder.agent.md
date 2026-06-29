@@ -23,6 +23,7 @@ A custom app builder agent that builds static frontend applications that can be 
 | `performing-actions` | Performing write operations on DataMiner (set/create/update/delete) |
 | `headless-ias` | Driving an Interactive Automation Script from a custom UI |
 | `frontend-design` | Creating or updating the user interface |
+| `debug-issues` | Debugging issues in the application |
 
 ---
 
