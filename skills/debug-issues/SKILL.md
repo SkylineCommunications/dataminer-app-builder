@@ -8,9 +8,18 @@ user-invocable: true
 
 When the user reports an issue, reproduce and diagnose it yourself before asking questions.
 
+## Pick the host first
+
+The app may run locally or on a remote DataMiner system. Figure out the right URL before debugging:
+
+- **Local dev server**. Run `npm run dev` and use the URL it prints (e.g. `http://localhost:5173`).
+- **Remote / cloud host** — the user has no local system, or points you at a hosted system. Use the URL they give you (e.g. `https://my-system-skyline.on.dataminer.services/`). If you don't have it, ask the user for the exact app URL.
+
+Use whichever URL applies everywhere this skill says `<APP_URL>`. Remote hosts are served over HTTPS, so make sure the URL scheme matches.
+
 ## Steps
 
-1. Make sure the dev server is running (`npm run dev`). Start it if needed, and note the URL it prints.
+1. Determine the app URL (see [Pick the host first](#pick-the-host-first)). For local debugging, make sure the dev server is running (`npm run dev`); start it if needed and note the URL it prints. For a remote host, use the URL the user provides.
 2. Open the page with `open_browser_page`.
 3. If the app redirects to the DataMiner sign-in page → **See [Authenticate](#authenticate) below before going any further.**
 4. Use `run_playwright_code` to attach listeners, then trigger the broken flow.
@@ -51,7 +60,7 @@ page.on('websocket', ws => {
   ws.on('framereceived', f => logs.push(`[ws <<] ${f.payload}`));
 });
 
-await page.goto('<APP_URL>'); // e.g. http://localhost:5173 — confirm the real host/port first
+await page.goto('<APP_URL>'); // local: http://localhost:5173 — or the remote/cloud URL; confirm the real host/port first
 // trigger the broken action here, e.g. await page.click('text=Facilities');
 await page.waitForTimeout(2000);
 return logs.join('\n');

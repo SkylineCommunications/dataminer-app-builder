@@ -92,6 +92,7 @@ API call -> if response is 500 AND exception type is NoConnectionWebApiException
 - A `500` response may indicate a server-side error unrelated to the session — only treat it as an auth failure when the error type is `NoConnectionWebApiException`; other 500 errors should be surfaced as application errors
 - Build the redirect with `encodeURIComponent(location.pathname + location.search)`; never hand-write `%2F` in code
 - Do NOT render an in-app login form as a fallback — sign-in always happens on DataMiner's `/auth/` page
+- If the app suddenly shows a blank page, the `DMAConnection` cookie has likely expired. Redirect to `/auth/?url=<current-path>` to get a fresh session.
 
 ---
 
