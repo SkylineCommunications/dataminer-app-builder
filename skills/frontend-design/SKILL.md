@@ -165,4 +165,5 @@ body { font-family: 'FontName', sans-serif; font-size: 14px; line-height: 20px; 
 ### Header
 
 - Make the header `49px` height.
-- Use the `.agents\skills\frontend-design\references\dataminer-logo.svg` for the logo shown at the left side of the header. Next to that show a divider and then the name of the application.
+- Use the `.agents\skills\frontend-design\references\dataminer-logo.svg` for the logo shown at the left side of the header. Make sure the color of the logo also adapts to the theme.
+- Next to the dataMiner logo, show a divider and then the name of the application.

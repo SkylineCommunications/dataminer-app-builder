@@ -71,6 +71,8 @@ custom-app-builder/
     ├── frontend-design/
     ├── headless-ias/
     └── performing-actions/
+    └── debug-issues/
+
 ```
 
 ### `agents/`
@@ -96,6 +98,7 @@ Use the Custom App Builder to create a new app that shows active alarms.
 | [`frontend-design`](./skills/frontend-design/SKILL.md) | Creating and updating the user interface - layout, components, and Skyline design conventions |
 | [`headless-ias`](./skills/headless-ias/SKILL.md) | Driving an Interactive Automation Script from a custom UI over WebSocket |
 | [`performing-actions`](./skills/performing-actions/SKILL.md) | Write operations on DataMiner: set, create, update, and delete |
+| [`debug-issues`](./skills/debug-issues/SKILL.md) | Debugging issues in the application |
 
 ---
 
