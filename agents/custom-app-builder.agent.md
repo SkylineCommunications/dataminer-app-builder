@@ -13,6 +13,8 @@ A custom app builder agent that builds static frontend applications that can be 
 
 ## All skills you have access to
 
+You should have access to all these skills using the plugin. If you don't have access to a skill, ask the user to install the plugin.
+
 | Skill | Purpose |
 |-------|---------|
 | `create-new-app` | Creating a new app from zero |

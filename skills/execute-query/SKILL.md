@@ -102,6 +102,7 @@ POST ../../API/v1/Internal.asmx/OpenQuerySessionAsync
 ```
 
 - Use `DisplayValue` for rendering — it resolves discreet values to their display strings
+- Enum-like columns return their display string, not an integer — key filters/lookups on the string.
 - `IsLast: false` means more pages are available — send another `GetNextQuerySessionPage`
 
 ---
