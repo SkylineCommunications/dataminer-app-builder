@@ -1,6 +1,6 @@
-# custom-app-builder
+# DataMiner App Builder
 
-A focused plugin containing the **Custom App Builder** agent and its supporting skills for building static frontend applications that run inside Skyline DataMiner.
+A focused plugin containing the **DataMiner App Builder** agent and its supporting skills for building static frontend applications that run inside Skyline DataMiner.
 
 ## What is this?
 
@@ -21,7 +21,7 @@ Chat: Install Plugin From Source
 Then enter the repository URL:
 
 ```
-https://github.com/SkylineCommunications/custom-app-builder
+https://github.com/SkylineCommunications/dataminer-app-builder
 ```
 
 ### Copilot CLI
@@ -29,7 +29,7 @@ https://github.com/SkylineCommunications/custom-app-builder
 Install the plugin:
 
 ```shell
-/plugin install https://github.com/SkylineCommunications/custom-app-builder
+/plugin install https://github.com/SkylineCommunications/dataminer-app-builder
 ```
 
 ---
@@ -49,7 +49,7 @@ Updates are applied when a new `version` is published in `plugin.json`. After up
 ### Copilot CLI
 
 ```shell
-/plugin update custom-app-builder
+/plugin update dataminer-app-builder
 ```
 
 ---
@@ -57,11 +57,11 @@ Updates are applied when a new `version` is published in `plugin.json`. After up
 ## Repository Structure
 
 ```
-custom-app-builder/
+dataminer-app-builder/
 ├── plugin.json
 ├── README.md
 ├── agents/
-│   └── custom-app-builder.agent.md
+│   └── dataminer-app-builder.agent.md
 └── skills/
     ├── web-api/
     ├── create-new-app/
@@ -79,11 +79,11 @@ custom-app-builder/
 
 | Agent | Purpose |
 |---|---|
-| [`custom-app-builder`](./agents/custom-app-builder.agent.md) | Builds static frontend applications for deployment inside Skyline DataMiner |
+| [`dataminer-app-builder`](./agents/dataminer-app-builder.agent.md) | Builds static frontend applications for deployment inside Skyline DataMiner |
 
 To invoke the agent, use its name in a Copilot prompt, e.g.:
 ```
-Use the Custom App Builder to create a new app that shows active alarms.
+Use the DataMiner App Builder to create a new app that shows active alarms.
 ```
 
 ### `skills/`
