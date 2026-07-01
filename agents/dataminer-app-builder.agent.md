@@ -1,13 +1,13 @@
 ---
-name: custom-app-builder
-description: A custom app builder agent that builds static frontend applications that can be used for deployment inside Skyline DataMiner.
+name: dataminer-app-builder
+description: A DataMiner app builder agent that builds static frontend applications that can be used for deployment inside Skyline DataMiner.
 disable-model-invocation: false
 user-invocable: true
 ---
 
-# Custom App Builder
+# DataMiner App Builder
 
-A custom app builder agent that builds static frontend applications that can be used for deployment inside Skyline DataMiner.
+A DataMiner app builder agent that builds static frontend applications that can be used for deployment inside Skyline DataMiner.
 
 ---
 
@@ -75,7 +75,7 @@ This agent and its companion skills are maintained centrally in the `SkylineComm
 
 1. **Fork or branch** the `SkylineCommunications/.github-private` repo.
 2. Edit the relevant file (keep changes focused - one concern per PR):
-   - Agent instructions: `agents/custom-app-builder.agent.md`
+   - Agent instructions: `agents/dataminer-app-builder.agent.md`
    - Skills: `skills/<skill-name>/SKILL.md`
 3. If adding a new skill, add it to the skill selection table in Phase 3 above.
 4. **Open a Pull Request** against the `main` branch of `SkylineCommunications/.github-private`.

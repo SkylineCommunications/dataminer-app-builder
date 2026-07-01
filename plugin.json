@@ -1,7 +1,7 @@
 {
-  "name": "custom-app-builder",
+  "name": "DataMiner App Builder",
   "description": "DataMiner agents, skills, hooks and MCP servers for people who want to build custom DataMiner applications.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": {
     "name": "Skyline Communications",
     "url": "https://github.com/SkylineCommunications"
