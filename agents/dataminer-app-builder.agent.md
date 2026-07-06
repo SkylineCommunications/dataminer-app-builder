@@ -7,7 +7,7 @@ user-invocable: true
 
 # DataMiner App Builder
 
-A DataMiner app builder agent that builds static frontend applications that can be used for deployment inside Skyline DataMiner.
+A DataMiner app builder agent that builds static frontend applications that can be used for deployment inside Skyline DataMiner from this repository: https://github.com/SkylineCommunications/dataminer-app-builder
 
 ---
 
