@@ -65,7 +65,8 @@ Key rules:
 - The app must be reached via `/auth/?url=...` (URL-encoded path). Opening `/public/{BuildFolderName}/index.html` directly has no session.
 - On app load, read the GUID from `document.cookie` and verify it with `IsConnectionAlive`. If the cookie is absent or verification fails, redirect to `/auth/?url=` + `encodeURIComponent(location.pathname + location.search)`.
 - Keep the verified GUID in memory (React state/context) — it is needed for WebSocket `SetConnectionID` and for endpoints that require an explicit `connection` parameter.
-- **Sign-out for custom apps**: redirect to `/auth/logout?url=<current-path>` — this triggers a clean logout on the WebAPI and clears all session cookies server-side.
+- Iframe deployment: the app may be embedded in an `<iframe>`. Handle missing cookies gracefully (do not crash) and avoid infinite redirect loops. See `references/authentication.md` for details.
+- Sign-out for custom apps: redirect to `/auth/logout?url=<current-path>` — this triggers a clean logout on the WebAPI and clears all session cookies server-side.
 
 ---
 
@@ -77,6 +78,7 @@ Before rendering protected UI, verify the session GUID with `IsConnectionAlive` 
 - Call `IsConnectionAlive` once to confirm the GUID is valid before rendering
 - If the call fails, the cookie is absent, or the GUID is empty, redirect to `/auth/?url=<current-path>`
 - Do not call `IsConnectionAlive` again after a successful bootstrap — one check is sufficient
+- Render a loading state while the session check is in progress — if the `DMAConnection` cookie is absent before `IsConnectionAlive` returns, redirect to `/auth/?url=<current-path>` immediately without waiting for the call to complete
 
 ---
 

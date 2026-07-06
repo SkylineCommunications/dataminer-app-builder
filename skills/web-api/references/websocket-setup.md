@@ -63,7 +63,7 @@ Send immediately after the socket opens:
 
 ### 3. Keep-alive — Ping/Pong
 
-Send periodically to keep the connection alive:
+Send every **30 seconds** to keep the connection alive (This also resets the server-side session timer, so no separate HTTP keep-alive call is needed.):
 
 ```json
 { "ClientSubscriptionID": 0, "Method": "Ping", "Parameters": {} }

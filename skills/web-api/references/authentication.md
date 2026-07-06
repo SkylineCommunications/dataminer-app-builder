@@ -5,6 +5,7 @@
 > - The cookie value is the connection GUID directly. No extra API call is needed to obtain it.
 > - `ConnectAppAndInfo` with empty credentials does **not** return a GUID — it requires real credentials. Do not call it on behalf of end users; use the cookie instead.
 > - Sign-out must go through `/auth/logout` — do **not** clear `DMAConnection` from JavaScript. `/auth/logout` triggers a clean logout on the WebAPI and clears all session cookies server-side.
+> - Iframe: if the app is embedded in an `<iframe>`, the `DMAConnection` cookie may be unreadable — treat a missing cookie the same as an invalid session (do not crash). Use `window.top.location.replace(...)` for auth redirects so the top-level page navigates rather than just the iframe. If `window.top` is inaccessible (cross-origin iframe), do not redirect at all.
 
 Apps must be opened through `/auth/?url=%2Fpublic%2F{BuildFolderName}%2Findex.html`. After sign-in, DataMiner sets the `DMAConnection` cookie and redirects to the app.
 
@@ -50,7 +51,7 @@ Content-Type: application/json
 
 - If the response is `200 OK` → session is valid, proceed to render the app.
 - If the call returns 401, 403, or 500 with type `NoConnectionWebApiException` → cookie is stale or GUID is invalid, redirect to `/auth/`.
-- Do **not** call this more than once per page load — one check is sufficient.
+- Do **not** call this more than once per page load — one check is sufficient. Session keep-alive is handled by WebSocket Ping (see `references/websocket-setup.md`).
 
 ---
 
