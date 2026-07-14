@@ -8,15 +8,13 @@ This reference covers GQI-specific WebSocket messages used by `CreateAIGenerated
 
 ## Queue-based event subscription
 
-HTTP calls that trigger async work (e.g. `CreateAIGeneratedQuery`, `OpenQuerySessionAsync`) create a server-side queue. Subscribe to it via WebSocket **after** the HTTP call returns:
+`GetEvents` creates the server-side queue and subscribes to it. Send it **before** the HTTP call (`OpenQuerySessionAsync` / `CreateAIGeneratedQuery`):
 
 ```json
 { "ClientSubscriptionID": <N>, "Method": "GetEvents", "Parameters": { "queueID": <same-queueID-as-HTTP-call> } }
 ```
 
-The server then delivers results as `DMAEvent` messages on that queue.
-
-> **Ordering rule:** Register the WebSocket `message` listener BEFORE the HTTP call. Send `GetEvents` AFTER the HTTP call returns (the queue doesn't exist server-side until the HTTP call creates it).
+The server then delivers results as `DMAEvent` messages on that queue. Make the HTTP call only after `GetEvents` is sent.
 
 ---
 
