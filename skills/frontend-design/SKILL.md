@@ -42,13 +42,19 @@ Interface colors are used for backgrounds, borders, dividers, text,... They are 
 
 ### Alert colors (work in both light and dark mode)
 
-Alert colors are used for alarms, informative, warning, error or success messages, icons, highlights,...
+Alert colors are used for UI messaging and status accents: informative, warning, error or success messages, icons, highlights,... Use these for your own application's feedback and states.
 
 - `var(--error)`: #FA4D56
 - `var(--major)`: #FF832B
 - `var(--minor)`: #F1C21B
 - `var(--success)`: #24A148
 - `var(--mask)`: #A56EFF
+
+### Alarm colors
+
+DataMiner alarms are used for actual DataMiner alarm severities:
+
+- Visualizing actual DataMiner alarms (rendering a real alarm/severity such as Critical, Major, Minor, Warning, Normal, Timeout, Masked,...): do not use the static colors above. Alarm severity colors are configurable per DataMiner System, so fetch the live values from the `GetDataMinerAgentAlarmColors` Web API endpoint (they are also returned by `ConnectAppAndInfo`/`ReconnectAppAndInfo`). See the web-api skill. Map the returned RGB values (`Critical`, `Major`, `Minor`, `Warning`, `Normal`, `Error`, `Timeout`, `Masked`, `Notice`, `Information`, `Initial`, `NotMonitored`, `Undefined`) to CSS variables at runtime so your alarm visuals match the operator's DataMiner.
 
 ### Data colors (work in both light and dark mode)
 

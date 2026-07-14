@@ -70,7 +70,7 @@ dataminer-app-builder/
     ├── execute-query/
     ├── frontend-design/
     ├── headless-ias/
-    └── performing-actions/
+    ├── performing-actions/
     └── debug-issues/
 
 ```
