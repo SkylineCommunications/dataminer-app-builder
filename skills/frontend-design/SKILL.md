@@ -50,11 +50,9 @@ Alert colors are used for UI messaging and status accents: informative, warning,
 - `var(--success)`: #24A148
 - `var(--mask)`: #A56EFF
 
-### Alarm colors
+### Severity colors
 
-DataMiner alarms are used for actual DataMiner alarm severities:
-
-- Visualizing actual DataMiner alarms (rendering a real alarm/severity such as Critical, Major, Minor, Warning, Normal, Timeout, Masked,...): do not use the static colors above. Alarm severity colors are configurable per DataMiner System, so fetch the live values from the `GetDataMinerAgentAlarmColors` Web API endpoint (they are also returned by `ConnectAppAndInfo`/`ReconnectAppAndInfo`). See the web-api skill. Map the returned RGB values (`Critical`, `Major`, `Minor`, `Warning`, `Normal`, `Error`, `Timeout`, `Masked`, `Notice`, `Information`, `Initial`, `NotMonitored`, `Undefined`) to CSS variables at runtime so your alarm visuals match the operator's DataMiner.
+- Visualizing actual DataMiner severities (rendering a real alarm/service/element/view severity such as Critical, Major, Minor, Warning, Normal, Timeout, Masked,...): do not use the static colors above. Severity colors are configurable per DataMiner System, so fetch the live values from the `GetDataMinerAgentAlarmColors` Web API endpoint (they are also returned by `ConnectAppAndInfo`/`ReconnectAppAndInfo`). See the web-api skill. Map the returned RGB values (`Critical`, `Major`, `Minor`, `Warning`, `Normal`, `Error`, `Timeout`, `Masked`, `Notice`, `Information`, `Initial`, `NotMonitored`, `Undefined`) to CSS variables at runtime so your severity visuals (alarms, services, elements and views) match the operator's DataMiner.
 
 ### Data colors (work in both light and dark mode)
 
