@@ -34,6 +34,7 @@ Make sure you don't skip any of these steps and follow them in order to ensure a
 - **Output:** Static build (HTML / CSS / JS)
 - Do not use `npm create vite` or any CLI scaffold. Create all files directly, then run `npm install` once.
 - All app files must be created inside a dedicated project subfolder (e.g. `my-app-name/`) — never at the workspace root.
+- Always use the latest version of dependencies (React, Vite, TypeScript, etc.) unless the user specifies otherwise or a specific version is required for compatibility.
 
 **Architecture Constraints**
 

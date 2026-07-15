@@ -87,4 +87,4 @@ This agent and its companion skills are maintained centrally in the `SkylineComm
 ## Prerequisites
 
 - Node.js
-- A DataMiner system
+- DataMiner system running version 10.5 or higher

@@ -19,6 +19,11 @@ Use this when there is an existing Automation Script that handles the operation.
 
 See the [execute-automation-script](../execute-automation-script/SKILL.md) skill for the full API details, request structure, and parameter encoding rules.
 
+### User-Defined APIs (UDAPIs)
+Every UDAPI is backed by an Automation Script: you define the API on top of a script, and the API trigger runs that script — via the `OnApiTrigger` entry point (recommended) or the `Run` method (see [Using an existing script as a User-Defined API](https://docs.dataminer.services/dataminer/Functions/User-Defined_APIs/Defining_an_API/UD_APIs_Using_existing_scripts.html)).
+
+Do not call the [UDAPI](https://docs.dataminer.services/dataminer/Functions/User-Defined_APIs/UD_APIs.html) HTTP endpoint directly from the app — UDAPIs need a bearer token, and embedding one in client-side code exposes it. Instead, run the backing script directly via `ExecuteAutomationScriptWithOutput` (see above), authenticated by the DataMiner session — no bearer token needed. This executes the script's `Run` entry point (not `OnApiTrigger`), so make sure the logic you need is reachable from `Run` and that it returns data with `engine.AddScriptOutput(key, value)`, which comes back as the `{ Key, Value }` output list.
+
 ## General Pattern
 
 1. Identify the right mechanism and operation to call
