@@ -185,7 +185,7 @@ function httpPost(path, body) {
 
 (async () => {
   let subID = 1;
-  const nlQueueID = Math.floor(Math.random() * 1_000_000);
+  const nlQueueID = crypto.getRandomValues(new Uint32Array(1))[0];
   const wsUrl = baseUrl.replace(/^https?/, isHttps ? 'wss' : 'ws') + '/API/v1/WebSocket.ashx';
   const ws = new WebSocket(wsUrl, { rejectUnauthorized: false });
 

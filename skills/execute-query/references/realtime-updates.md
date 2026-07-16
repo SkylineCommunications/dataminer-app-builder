@@ -105,13 +105,12 @@ All live frames arrive as `Type: "DMAEvent"` with `Data.ClientSubscriptionID ===
 
 | `__type` suffix | Meaning | Shape |
 |----------------|---------|-------|
-| `DMAGenericInterfaceBulkUpdate` | initial full state delivered in one frame | `Message.Events: [ ... ]` — each entry is one of the typed objects below; handle each in order |
+| `DMAGenericInterfaceBulkUpdate` | multiple near-simultaneous events batched into one frame for performance | `Message.Events: [ ... ]` — each entry is one of the typed objects below; handle each in order |
 | `DMAGenericInterfaceResultPage` | initial / paged full rows | `Message.Rows: [{ Cells:[{Value,DisplayValue}] }]`, `Message.IsLast` |
 | `DMAGenericInterfaceUpdatedRowsUpdate` | cell-level deltas to existing rows | `Message.Rows: [{ Key, Cells:[{ ColumnIndex, Cell:{Value,DisplayValue} }] }]` |
 | `DMAGenericInterfaceAddedRowsUpdate` | whole rows added | `Message.Rows: [{ Key, Cells:[...] }]` |
-| `DMAGenericInterfaceDeletedRowsUpdate` / `...RemovedRowsUpdate` | rows removed | `Message.Keys: [...]` (or `Rows` with `Key`) |
-
-With `OptimizationType: 0` the full initial state arrives as a single `DMAGenericInterfaceBulkUpdate` (loop over `Events[]`); live changes then arrive as standalone `AddedRowsUpdate` / `DeletedRowsUpdate` / `UpdatedRowsUpdate` frames. Always pass an empty `columns` array in the query and read values by column name — a populated columns filter triggers a "nodeIdxs can't be null or empty" error.
+| `DMAGenericInterfaceDeletedRowsUpdate` | rows removed | `Message.RemovedKeys: [...]` |
+| `DMAGenericInterfaceSessionFetchUpdate` | a notification event — the query can detect that something changed but cannot say what. Can serve as a trigger to fetch the result of the query again ("smart polling") | no row payload — a signal only |
 
 **Key handling:**
 
@@ -145,7 +144,7 @@ const PAGE_SIZE = 500;
 const RECONNECT_DELAY_MS = 4000;
 
 const QUERY_OPTIONS = {
-  OptimizationType: 0,
+  OptimizationType: 0,  // 0 = first page fast, 1 = all pages fast
   TimeZoneID: Intl.DateTimeFormat().resolvedOptions().timeZone,
   LanguageTag: navigator.language || 'en-US',
   FetchLocal: true,
@@ -197,7 +196,7 @@ function observeQuery(connection, query, mapRow, { onData, onError } = {}) {
     if (stopped) return;
     order.length = 0; byKey.clear(); columns = []; idIndex = 0;
     ws = new WebSocket(WS_URL);
-    const queueID = Math.floor(Math.random() * 1_000_000);
+    const queueID = crypto.getRandomValues(new Uint32Array(1))[0];
     let sessionId = null, opened = false;
 
     const nextPage = () => ws.send(JSON.stringify({
@@ -238,17 +237,19 @@ function observeQuery(connection, query, mapRow, { onData, onError } = {}) {
         for (const ev of m.Events || []) {
           const et = ev.__type || '';
           if (et.endsWith('AddedRowsUpdate')) for (const r of ev.Rows || []) upsertFull(r);
-          else if (et.endsWith('DeletedRowsUpdate') || et.endsWith('RemovedRowsUpdate'))
-            for (const k of ev.Keys || (ev.Rows || []).map((r) => r.Key)) removeRow(k);
+          else if (et.endsWith('DeletedRowsUpdate'))
+            for (const k of ev.RemovedKeys || []) removeRow(k);
           else if (et.endsWith('UpdatedRowsUpdate')) for (const r of ev.Rows || []) applyDelta(r);
         }
         emit(); return;
       }
       if (t.endsWith('UpdatedRowsUpdate')) { for (const r of m.Rows || []) applyDelta(r); emit(); return; }
       if (t.endsWith('AddedRowsUpdate'))   { for (const r of m.Rows || []) upsertFull(r); emit(); return; }
-      if (t.endsWith('DeletedRowsUpdate') || t.endsWith('RemovedRowsUpdate')) {
-        const keys = m.Keys || (m.Rows || []).map((r) => r.Key ?? rowKey(r.Cells || []));
-        for (const k of keys) removeRow(k); emit(); return;
+      if (t.endsWith('DeletedRowsUpdate')) {
+        for (const k of m.RemovedKeys || []) removeRow(k); emit(); return;
+      }
+      if (t.endsWith('SessionFetchUpdate')) {                          // notification event (GQI relays ~every 30s) — no row payload
+        scheduleReconnect(); return;                                  // recreate the session to re-fetch current data
       }
       if (m.Rows !== undefined && m.IsLast !== undefined) {            // initial pages
         for (const r of m.Rows || []) upsertFull(r);
@@ -291,4 +292,4 @@ Work down this list — these are the exact failure modes observed:
 5. **Filtering out the frames.** Updates are tagged with `Data.ClientSubscriptionID === SUBSCRIPTION_ID`, not the outer `2`. Filter on the session ID, not the command ID.
 6. **Socket closed after initial load.** Push frames need the socket open; do not close it.
 7. **Calling `ObserveInformationMessages`.** Not needed for GQI and it interferes with event delivery. Only `GetEvents` + `ObserveQuerySessionAsync` + `GetNextQuerySessionPage` are required.
-8. **Data source genuinely emits no updates.** Most ad hoc/custom data sources that back live views DO push. Confirm by triggering a real change and watching for an `UpdatedRowsUpdate` frame; if none ever arrives despite a correct handshake, the data source itself does not emit updates and periodic re-fetching is the only fallback.
+8. **Data source genuinely emits no updates.** Support depends on the lowest-supported source/operator in the query: some stream real-time deltas, some only emit notification events (`SessionFetchUpdate`, ~every 30 s), some emit nothing. You cannot know this ahead of time, so ask the user what to expect and let their answer drive the implementation — subscribe when updates are delivered, fall back to periodic re-fetching when they aren't. See [Query update support](https://docs.dataminer.services/dataminer/Functions/Dashboards_and_Low_Code_Apps/GQI/Query_updates.html#query-update-support).

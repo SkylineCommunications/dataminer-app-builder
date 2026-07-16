@@ -57,13 +57,13 @@ POST ../../API/v1/Internal.asmx/OpenQuerySessionAsync
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `OptimizationType` | int | `1` = standard. Controls server-side query optimization strategy. |
+| `OptimizationType` | int | `0` = optimize to return the first page of results quickly. `1` = optimize to return all pages as fast as possible. |
 | `TimeZoneID` | string | IANA timezone string used to format date/time values (e.g. `"Europe/Brussels"`). Use `Intl.DateTimeFormat().resolvedOptions().timeZone` for the user's local timezone. |
 | `LanguageTag` | string | BCP 47 language tag for localized display values (e.g. `"en-US"`). Use `navigator.language` for the user's browser language. |
 | `FetchLocal` | bool | `true` = data is fetched on the DMA itself (required for most use cases). |
 | `UseDynamicUnits` | bool | `true` = units adapt to the magnitude of the value (e.g. KB → MB → GB). |
 | `EnableUpdates` | bool | `false` = one-shot fetch. `true` = live updates pushed via WebSocket as data changes. Use `false` for most production apps. |
-| `QueryTag` | string | Optional label for server-side logging and diagnostics. Leave empty unless debugging. |
+| `QueryTag` | string | Short identifier to help trace the source of a query when troubleshooting — e.g. `"MyApp/Resources"` or `"MyApp/Q1"`. |
 
 ---
 
@@ -113,13 +113,13 @@ POST ../../API/v1/Internal.asmx/OpenQuerySessionAsync
 |------|-----------|--------|
 | 1 | client→server | `SetConnectionID` — bind WebSocket to HTTP session |
 | 2 | server→client | `Type: "String"` confirmation — wait before proceeding |
-| 3 | client→HTTP | `OpenQuerySessionAsync` — creates queue; returns `d.ID` (session ID) and `d.Columns` |
-| 4 | client→server | `GetEvents` with same `queueID` — subscribe to queue |
+| 3 | client→server | `GetEvents` with `queueID` — creates the server-side queue; subscribe to it |
+| 4 | client→HTTP | `OpenQuerySessionAsync` — returns `d.ID` (session ID) and `d.Columns` |
 | 5 | client→server | `GetNextQuerySessionPage` — request first page of rows |
 | 6 | server→client | `DMAEvent` with `Message.Rows` — accumulate; check `Message.IsLast` |
 | 7 | (repeat 5–6) | if `IsLast: false`, send another `GetNextQuerySessionPage` |
 
-> **Race condition:** Register the WebSocket `message` listener BEFORE calling `OpenQuerySessionAsync`. Send `GetEvents` AFTER the HTTP call returns (the server-side queue doesn't exist until the HTTP call creates it).
+> `GetEvents` (step 3) is what creates the server-side queue — always send it before calling `OpenQuerySessionAsync`. Generate one `queueID` per app session and reuse it across all queries on the same connection.
 
 ---
 
@@ -142,9 +142,11 @@ async function internalPost(method, body) {
 // Hardcoded query object — discovered by the agent's Node.js script (see data-discovery skill)
 const QUERY = { /* discovered query object goes here */ };
 
+// One queue ID per app session — reused for every query on this connection
+const QUEUE_ID = crypto.getRandomValues(new Uint32Array(1))[0];
+
 async function fetchData(connection) {
   let subID = 1;
-  const rowQueueID = Math.floor(Math.random() * 1_000_000);
 
   return new Promise((resolve, reject) => {
     const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -161,9 +163,11 @@ async function fetchData(connection) {
     ws.addEventListener('message', async e => {
       const msg = JSON.parse(e.data);
       if (msg.Type === 'String') {
+        // GetEvents creates the server-side queue — send it before OpenQuerySessionAsync
+        ws.send(JSON.stringify({ ClientSubscriptionID: subID++, Method: 'GetEvents', Parameters: { queueID: QUEUE_ID } }));
         const sessionInfo = await internalPost('OpenQuerySessionAsync', {
           connection,
-          queueID: rowQueueID,
+          queueID: QUEUE_ID,
           clientSubscriptionID: subID++,
           query: QUERY,
           options: {
@@ -173,12 +177,11 @@ async function fetchData(connection) {
             FetchLocal: true,
             UseDynamicUnits: true,
             EnableUpdates: false,
-            QueryTag: ''
+            QueryTag: 'MyApp/QueryName' // short identifier for tracing; update to match your app/query
           }
         });
         sessionId = sessionInfo.ID;
         columns = sessionInfo.Columns;
-        ws.send(JSON.stringify({ ClientSubscriptionID: subID++, Method: 'GetEvents', Parameters: { queueID: rowQueueID } }));
         ws.send(JSON.stringify({
           ClientSubscriptionID: subID++,
           Method: 'NotifySubscription',
