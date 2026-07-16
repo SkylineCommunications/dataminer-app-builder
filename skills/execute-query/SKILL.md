@@ -62,7 +62,7 @@ POST ../../API/v1/Internal.asmx/OpenQuerySessionAsync
 | `LanguageTag` | string | BCP 47 language tag for localized display values (e.g. `"en-US"`). Use `navigator.language` for the user's browser language. |
 | `FetchLocal` | bool | `true` = data is fetched on the DMA itself (required for most use cases). |
 | `UseDynamicUnits` | bool | `true` = units adapt to the magnitude of the value (e.g. KB → MB → GB). |
-| `EnableUpdates` | bool | `false` = one-shot fetch. `true` = live updates pushed via WebSocket as data changes — only if the underlying data source supports push updates. Use `false` for most production apps. |
+| `EnableUpdates` | bool | `false` = one-shot fetch. `true` = live updates pushed via WebSocket as data changes. Use `false` for most production apps. |
 | `QueryTag` | string | Short identifier to help trace the source of a query when troubleshooting — e.g. `"MyApp/Resources"` or `"MyApp/Q1"`. |
 
 ---
@@ -143,7 +143,7 @@ async function internalPost(method, body) {
 const QUERY = { /* discovered query object goes here */ };
 
 // One queue ID per app session — reused for every query on this connection
-const QUEUE_ID = Math.floor(Math.random() * 1_000_000);
+const QUEUE_ID = crypto.getRandomValues(new Uint32Array(1))[0];
 
 async function fetchData(connection) {
   let subID = 1;

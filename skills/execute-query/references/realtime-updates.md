@@ -110,7 +110,7 @@ All live frames arrive as `Type: "DMAEvent"` with `Data.ClientSubscriptionID ===
 | `DMAGenericInterfaceUpdatedRowsUpdate` | cell-level deltas to existing rows | `Message.Rows: [{ Key, Cells:[{ ColumnIndex, Cell:{Value,DisplayValue} }] }]` |
 | `DMAGenericInterfaceAddedRowsUpdate` | whole rows added | `Message.Rows: [{ Key, Cells:[...] }]` |
 | `DMAGenericInterfaceDeletedRowsUpdate` | rows removed | `Message.RemovedKeys: [...]` |
-| `DMAGenericInterfaceSessionFetchUpdate` | a notification event — the query can detect that something changed but cannot say what | no row payload — a signal only |
+| `DMAGenericInterfaceSessionFetchUpdate` | a notification event — the query can detect that something changed but cannot say what. Can serve as a trigger to fetch the result of the query again ("smart polling") | no row payload — a signal only |
 
 **Key handling:**
 
@@ -196,7 +196,7 @@ function observeQuery(connection, query, mapRow, { onData, onError } = {}) {
     if (stopped) return;
     order.length = 0; byKey.clear(); columns = []; idIndex = 0;
     ws = new WebSocket(WS_URL);
-    const queueID = Math.floor(Math.random() * 1_000_000);
+    const queueID = crypto.getRandomValues(new Uint32Array(1))[0];
     let sessionId = null, opened = false;
 
     const nextPage = () => ws.send(JSON.stringify({
@@ -292,4 +292,4 @@ Work down this list — these are the exact failure modes observed:
 5. **Filtering out the frames.** Updates are tagged with `Data.ClientSubscriptionID === SUBSCRIPTION_ID`, not the outer `2`. Filter on the session ID, not the command ID.
 6. **Socket closed after initial load.** Push frames need the socket open; do not close it.
 7. **Calling `ObserveInformationMessages`.** Not needed for GQI and it interferes with event delivery. Only `GetEvents` + `ObserveQuerySessionAsync` + `GetNextQuerySessionPage` are required.
-8. **Data source genuinely emits no updates.** Support depends on the lowest-supported source/operator in the query: some stream real-time deltas, some only emit *notification events* (`SessionFetchUpdate`, ~every 30 s), some emit nothing. If no frame arrives after a real change despite a correct handshake, periodic re-fetching is the only fallback. See [Query update support](https://docs.dataminer.services/dataminer/Functions/Dashboards_and_Low_Code_Apps/GQI/Query_updates.html#query-update-support).
+8. **Data source genuinely emits no updates.** Support depends on the lowest-supported source/operator in the query: some stream real-time deltas, some only emit notification events (`SessionFetchUpdate`, ~every 30 s), some emit nothing. You cannot know this ahead of time, so ask the user what to expect and let their answer drive the implementation — subscribe when updates are delivered, fall back to periodic re-fetching when they aren't. See [Query update support](https://docs.dataminer.services/dataminer/Functions/Dashboards_and_Low_Code_Apps/GQI/Query_updates.html#query-update-support).
