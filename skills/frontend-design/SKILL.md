@@ -71,7 +71,7 @@ Data colors are used for data visualization, charts, highlights, states,... They
 
 ## Light and dark mode
 
-- Provide an icon toggle button to switch between light, dark or system mode, and make sure all colors work well in both modes.
+- Provide a button to switch between light, dark or system mode, and make sure all colors work well in both modes. When clicking the button it should open a dropdown with the three options including their labels.
 - If system mode is selected follow the user's OS setting. If they change their OS setting while using the app, the app should automatically update to reflect that.
 
 ## Fonts
@@ -101,7 +101,7 @@ body { font-family: 'FontName', sans-serif; font-size: 14px; line-height: 20px; 
 ## Text
 
 - Always use font Inter.
-- **Only use other text styles if specifically needed other then the body text.**
+- **Only use other text styles if specifically needed other than the body text.**
 - Use consistent text sizing and alignment.
 - Only use two weights max: 400 for normal text and 500 or 600 for emphasis.
 
@@ -170,4 +170,4 @@ body { font-family: 'FontName', sans-serif; font-size: 14px; line-height: 20px; 
 
 - Make the header `49px` height.
 - Use the `.agents\skills\frontend-design\references\dataminer-logo.svg` for the logo shown at the left side of the header. Make sure the color of the logo also adapts to the theme.
-- Next to the dataMiner logo, show a divider and then the name of the application.
+- Next to the DataMiner logo, show a divider and then the name of the application.
