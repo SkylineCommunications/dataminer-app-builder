@@ -2,6 +2,8 @@
 
 > [!WARNING]
 > This is an **experimental** agent used to explore an alternative app-building approach. It may change significantly in the future, and apps built with it today might not work with later versions and may need to be rebuilt.
+>
+> Distribution of this agent may also change over time and might not remain available through this plugin or repository.
 
 A focused plugin packaging the **DataMiner App Builder** agent and its supporting skills to scaffold, design, and integrate static frontend applications that run inside Skyline DataMiner.
 
