@@ -71,14 +71,14 @@ The application will be hosted inside **Skyline DataMiner**. DataMiner acts as a
 
 ## Contributing to This Agent
 
-This agent and its companion skills are maintained centrally in the `SkylineCommunications/.github-private` repository. To propose changes:
+This agent and its companion skills are maintained centrally in a repository. To propose changes:
 
-1. **Fork or branch** the `SkylineCommunications/.github-private` repo.
+1. **Fork or branch** the repository.
 2. Edit the relevant file (keep changes focused - one concern per PR):
    - Agent instructions: `agents/dataminer-app-builder.agent.md`
    - Skills: `skills/<skill-name>/SKILL.md`
 3. If adding a new skill, add it to the skill selection table in Phase 3 above.
-4. **Open a Pull Request** against the `main` branch of `SkylineCommunications/.github-private`.
+4. **Open a Pull Request** against the `main` branch.
 5. Describe what you changed and why in the PR description.
 6. Once merged, the updated instructions take effect for all repositories that reference this agent.
 

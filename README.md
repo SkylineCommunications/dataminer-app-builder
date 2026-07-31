@@ -5,6 +5,9 @@
 >
 > Distribution of this agent may also change over time and might not remain available through this plugin or repository.
 
+> [!IMPORTANT]
+> DataMiner apps built with the DataMiner App Builder are the **sole responsibility of the person who creates the app**. Every app must be properly validated and tested before use. The DataMiner App Builder can assist in this process, but can under no circumstances be held responsible for an app not working in production environments.
+
 A focused plugin packaging the **DataMiner App Builder** agent and its supporting skills to scaffold, design, and integrate static frontend applications that run inside Skyline DataMiner.
 
 ---
