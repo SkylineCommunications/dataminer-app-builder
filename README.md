@@ -69,7 +69,10 @@ They're a good fit when you need a highly customized UI beyond Low-Code Apps, fu
 ### Prerequisites
 
 * DataMiner system running version 10.5 or higher
-* Node.js
+* [Node.js](https://nodejs.org/en/download)
+* [Assistant DxM](https://docs.dataminer.services/dataminer/Functions/DataMiner_Assistant/Assistant_DxM.html)
+* [Git](https://git-scm.com/install)
+* Github Copilot license
 
 We recommend using Copilot in VS Code or the Copilot CLI. Alternatively, you can manually copy the agent and skills context into your IDE of choice.
 

@@ -7,6 +7,8 @@ user-invocable: true
 
 # Data Discovery Skill
 
+> **Note:** NL2GQI (`CreateAIGeneratedQuery`) requires the **DataMiner Assistant DxM** (v1.0.0+) to be installed and running. If it is missing, the HTTP call returns `{"d":null}` but no query arrives over the WebSocket (you get a `WebSocketError` `DMAEvent` and the discovery times out). Install it first: https://docs.dataminer.services/dataminer/Functions/DataMiner_Assistant/Assistant_DxM.html
+
 GQI is for data that is **NOT** available through the standard DataMiner Web API endpoints. Use GQI for DOM instances, ad hoc data sources, and custom queries. Do **NOT** use GQI for elements, alarms, views, or services — those are available through the **web-api** skill.
 
 The full flow is two steps:
@@ -142,7 +144,7 @@ Once the agent has the discovered query object from the Node.js script output:
 
 - Production apps always use hardcoded query objects with `OpenQuerySessionAsync`
 - `CreateAIGeneratedQuery` is only for agent-generated dev-time discovery scripts — never include it in the production app
-- NL2GQI requires the DataMiner Assistant DxM (v1.0.0+) and may not be enabled on all systems
+- NL2GQI requires the DataMiner Assistant DxM (v1.0.0+) and may not be enabled on all systems — see the note at the top of this skill
 - NL2GQI does not support column manipulations, custom operators, or data sources requiring parameter selection (e.g. "Get parameter table by ID")
 
 ---
