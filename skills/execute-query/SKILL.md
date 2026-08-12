@@ -214,6 +214,6 @@ async function fetchData(connection) {
 
 ## Running multiple queries in parallel
 
-Run **independent** queries concurrently over the single shared socket — don't serialize them. Keep the one WebSocket and one `queueID`; give each in-flight query a **distinct fixed inner `clientSubscriptionID`** (reused in its `OpenQuerySessionAsync` body and `GetNextQuerySessionPage` frames), then route each `DMAEvent` by `msg.Data.ClientSubscriptionID`. Don't close the socket when one query finishes.
+Run **independent** queries concurrently over the single shared socket: open every session up front by issuing their `OpenQuerySessionAsync` calls without awaiting one before starting the next. Keep the one WebSocket and one `queueID`; give each in-flight query a **distinct fixed inner `clientSubscriptionID`** (reused in its `OpenQuerySessionAsync` body and `GetNextQuerySessionPage` frames), then route each `DMAEvent` by `msg.Data.ClientSubscriptionID`. Don't close the socket when one query finishes.
 
 **Exception:** chain sequentially only when a query needs another's result (e.g. B filters on IDs from A); keep the rest parallel. See `references/realtime-updates.md` ("The subscription-id channel") for the routing details.
