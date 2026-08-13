@@ -1,6 +1,6 @@
 ---
 name: execute-query
-description: 'Execute GQI queries in a DataMiner frontend application using OpenQuerySessionAsync over WebSocket. Use when building production apps that need to fetch GQI data (DOM instances, ad hoc data sources, custom queries) from DataMiner using a known query object, or when the user provides a query object directly.'
+description: 'Execute GQI queries in a DataMiner frontend application using OpenQuerySessionAsync or ObserveQuerySessionAsync over WebSocket. Use when building production apps that need to fetch GQI data (DOM instances, ad hoc data sources, custom queries) from DataMiner using a known query object, or when the user provides a query object directly.'
 user-invocable: true
 ---
 
@@ -209,3 +209,11 @@ async function fetchData(connection) {
   });
 }
 ```
+
+---
+
+## Running multiple queries in parallel
+
+Run **independent** queries concurrently over the single shared socket: open every session up front by issuing their `OpenQuerySessionAsync` calls without awaiting one before starting the next. Keep the one WebSocket and one `queueID`; give each in-flight query a **distinct fixed inner `clientSubscriptionID`** (reused in its `OpenQuerySessionAsync` body and `GetNextQuerySessionPage` frames), then route each `DMAEvent` by `msg.Data.ClientSubscriptionID`. Don't close the socket when one query finishes.
+
+**Exception:** chain sequentially only when a query needs another's result (e.g. B filters on IDs from A); keep the rest parallel. See `references/realtime-updates.md` ("The subscription-id channel") for the routing details.

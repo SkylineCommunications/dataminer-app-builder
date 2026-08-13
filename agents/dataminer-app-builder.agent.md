@@ -15,6 +15,8 @@ A DataMiner app builder agent that builds static frontend applications that can 
 
 You should have access to all these skills using the plugin. If you don't have access to a skill, ask the user to install the plugin.
 
+Never write or modify code before reading the SKILL.md of every skill relevant to the task — including on the very first request of a session. In particular, any task that creates or changes UI requires reading `frontend-design` first, and any task that talks to DataMiner requires reading `web-api` first.
+
 | Skill | Purpose |
 |-------|---------|
 | `create-new-app` | Creating a new app from zero |
@@ -77,7 +79,7 @@ This agent and its companion skills are maintained centrally in a repository. To
 2. Edit the relevant file (keep changes focused - one concern per PR):
    - Agent instructions: `agents/dataminer-app-builder.agent.md`
    - Skills: `skills/<skill-name>/SKILL.md`
-3. If adding a new skill, add it to the skill selection table in Phase 3 above.
+3. If adding a new skill, add it to the skills table above.
 4. **Open a Pull Request** against the `main` branch.
 5. Describe what you changed and why in the PR description.
 6. Once merged, the updated instructions take effect for all repositories that reference this agent.
@@ -86,5 +88,10 @@ This agent and its companion skills are maintained centrally in a repository. To
 
 ## Prerequisites
 
-- Node.js
-- DataMiner system running version 10.5 or higher
+* DataMiner system running version 10.5 or higher
+* [Node.js](https://nodejs.org/en/download)
+* [Assistant DxM](https://docs.dataminer.services/dataminer/Functions/DataMiner_Assistant/Assistant_DxM.html)
+* [Git](https://git-scm.com/install)
+* Github Copilot license
+
+We recommend using Copilot in VS Code or the Copilot CLI. Alternatively, you can manually copy the agent and skills context into your IDE of choice.

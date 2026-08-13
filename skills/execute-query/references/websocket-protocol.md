@@ -55,3 +55,15 @@ The server responds with a `DMAEvent`:
 - `IsLast: true` → all rows received
 
 ---
+
+## Correlating pages when multiple queries run in parallel
+
+The single shared socket can carry **several query sessions at once**. Give each concurrent query a distinct, fixed inner `clientSubscriptionID` (used in both its `OpenQuerySessionAsync` body and `GetNextQuerySessionPage` frames). The server stamps that value onto every `DMAEvent` for the session as `Data.ClientSubscriptionID` — filter on it to keep streams separate:
+
+```json
+{ "Type": "DMAEvent", "Data": { "ClientSubscriptionID": 7, "Message": { "Rows": [ ... ], "IsLast": false } } }
+```
+
+Keep the single `queueID` and single WebSocket — only the inner `clientSubscriptionID` distinguishes parallel sessions. See the **execute-query** skill ("Running multiple queries in parallel").
+
+---
