@@ -1,5 +1,8 @@
 # DataMiner App Builder
 
+> [!IMPORTANT]
+> The DataMiner App Builder is owned by Skyline Communications NV and its use is governed by the DataMiner App Builder License in the LICENSE file. By installing or using it, you accept that license. You may not redistribute these files or use them to develop or offer a competing App Builder, agent or similar tool. "DataMiner" and "Skyline" are trademarks of Skyline Communications NV.
+
 > [!WARNING]
 > This is an **experimental** agent used to explore an alternative app-building approach. It may change significantly in the future, and apps built with it today might not work with later versions and may need to be rebuilt.
 >
