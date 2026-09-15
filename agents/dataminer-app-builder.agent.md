@@ -17,9 +17,12 @@ You should have access to all these skills using the plugin. If you don't have a
 
 Never write or modify code before reading the SKILL.md of every skill relevant to the task — including on the very first request of a session. In particular, any task that creates or changes UI requires reading `frontend-design` first, and any task that talks to DataMiner requires reading `web-api` first.
 
+Every NEW app task also requires reading `dataminer-e2e-testing` before implementation. Tests are mandatory even when the user does not request them: every created app must include and pass a frontend-only Playwright suite with all DataMiner HTTP and WebSocket interactions mocked. Never use live DataMiner systems, real credentials, or backend writes in these tests.
+
 | Skill | Purpose |
 |-------|---------|
 | `create-new-app` | Creating a new app from zero |
+| `dataminer-e2e-testing` | Mandatory mocked frontend Playwright tests for every new app; run and extend tests for updates |
 | `web-api` | Any API call to DataMiner (auth, elements, alarms, services, WebSocket setup) |
 | `data-discovery` | Fetching data from DataMiner (DOM instances, custom queries, GQI) |
 | `execute-query` | Executing a known GQI query (OpenQuerySessionAsync, paging over WebSocket) |
@@ -51,13 +54,30 @@ If ambiguous, ask the user to clarify.
 - Always ask the user what they want the app to do (or what needs to change for UPDATE tasks)
 - For NEW tasks: get the app name, key features, data sources, and any write-back operations needed
 
-### Phase 3 — Implement
+### Phase 3 — Discover data
+
+- Translate the requested UI into concrete data questions and choose the supported DataMiner source for each one.
+- Use `web-api` for documented element, alarm, view, and service endpoints. Invoke the `data-discovery` skill for DOM, ad hoc, and custom GQI data, then use `execute-query` to fetch and inspect representative rows.
+- Capture the exact production query/endpoint contract, columns, types, identifiers, and sanitized representative values. Do not infer response shapes or invent a convenience API.
+- Stop and resolve missing or unsuitable data with the user before building the affected feature.
+
+Do not continue to implementation until this discovery gate is complete.
+
+### Phase 4 — Implement
 
 Follow the loaded skills' guidance to implement the app. Always:
 
-- Attempt a production build before considering work complete
+- Require a successful production build before considering work complete
 - Verify the build output is deployable
-- Provide deployment instructions after every new build
+- Before creating or extending tests, write and share `e2e/TEST_PLAN.md` with app-specific scenarios, assertions, and exclusions; implement against that plan
+- For every NEW app, create an `e2e/` suite following `dataminer-e2e-testing`; for UPDATE tasks, run the existing suite and extend it for changed behavior
+- Run `npm run build` followed by `npx playwright test` in the app folder; do not mark a new app complete with missing, failing, skipped required, or unrun tests
+- Require persistent test output at `output/tests/results.json`, `output/tests/report/index.html`, and `output/tests/artifacts/`; inspect the JSON result after the final run and keep the output for review
+- Keep tests frontend-only: mock external HTTP APIs and WebSockets, including authentication and write operations
+- Derive Playwright fixtures from the discovered contracts and sanitized representative data. Intercept the same HTTP endpoints and WebSocket messages used by production code; never add mock-only branches or substitute a fake aggregate endpoint in the application.
+- Use Chromium only by default and test the custom app itself; authentication is successful mocked fixture setup, not a required test target
+- Provide deployment instructions, actual test counts, and links to `e2e/TEST_PLAN.md` and `output/tests/report/index.html` after every new build
+- If test execution is blocked, report the blocker and leave completion unclaimed
 
 ---
 

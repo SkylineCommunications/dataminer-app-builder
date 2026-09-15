@@ -69,6 +69,25 @@ Apps are static frontend applications (React + Vite + TypeScript) built with AI-
 
 They're a good fit when you need a highly customized UI beyond Low-Code Apps, full control over framework and styling, rapid prototyping, or an app that reads, acts on, or writes back DataMiner data (elements, alarms, DOM instances, GQI queries, Automation Scripts).
 
+### Required frontend tests
+
+Every created app must ship with an `e2e/` Playwright suite following the [dataminer-e2e-testing skill](./skills/dataminer-e2e-testing/SKILL.md), even when tests were not explicitly requested. The agent must run a successful production build and pass all required tests before marking the app complete:
+
+```shell
+npm run build
+npx playwright test
+```
+
+Before creating or extending tests, the agent writes `e2e/TEST_PLAN.md` mapping app features to scenarios, expected outcomes, and exclusions. Tests exercise only the custom app in Chromium, served from its production build. All DataMiner HTTP APIs and WebSockets are mocked. Authentication is successful fixture setup, not a test target. No live DMA, real credentials, or backend operations are required. Coverage includes requested features, combined interactions, empty/error states, responsive usability, and theming when present. Existing apps' suites are run and extended for changed behavior. These tests do not validate the DataMiner backend or replace deployment validation.
+
+Each app keeps the latest run under `output/tests/`: `results.json` contains machine-readable counts for the App Builder, `report/index.html` is the human-readable Playwright report, and `artifacts/` contains failure evidence. The App Builder inspects these results and links the report in its handover.
+
+### Discovery-first data and backend-free tests
+
+Before implementing a data-driven app, the App Builder discovers the actual DataMiner data needed by each screen. It uses documented Web API endpoints for standard DataMiner entities and agent-side NL2GQI discovery for DOM, ad hoc, or custom data. For GQI, the agent executes the generated query once to verify its columns, types, identifiers, and representative rows before writing the frontend.
+
+Production code uses those exact discovered endpoints or hardcoded GQI query objects. Playwright then intercepts the same HTTP and WebSocket boundaries and returns sanitized fixtures derived from the discovered response shape. Tests therefore exercise the real frontend data client and mapping logic without requiring a DataMiner backend, credentials, or network access. Mock data is never imported by production components, and generated apps do not add test-only API endpoints.
+
 ### Prerequisites
 
 * DataMiner system running version 10.5 or higher
@@ -109,6 +128,7 @@ dataminer-app-builder/
     ├── web-api/
     ├── create-new-app/
     ├── data-discovery/
+    ├── dataminer-e2e-testing/
     ├── execute-automation-script/
     ├── execute-query/
     ├── frontend-design/
@@ -135,6 +155,7 @@ Use the DataMiner App Builder to create a new app that shows active alarms.
 |---|---|
 | [`web-api`](./skills/web-api/SKILL.md) | DataMiner Web Services endpoints: authentication, elements, alarms, services, and WebSocket setup |
 | [`create-new-app`](./skills/create-new-app/SKILL.md) | End-to-end guidance for scaffolding a new DataMiner app from scratch |
+| [`dataminer-e2e-testing`](./skills/dataminer-e2e-testing/SKILL.md) | Mandatory frontend-only Playwright tests for every new app, with mocked HTTP APIs and WebSockets |
 | [`data-discovery`](./skills/data-discovery/SKILL.md) | Fetching data from DataMiner using GQI, DOM instances, and custom queries |
 | [`execute-automation-script`](./skills/execute-automation-script/SKILL.md) | Running a DataMiner Automation Script via `ExecuteAutomationScriptWithOutput` |
 | [`execute-query`](./skills/execute-query/SKILL.md) | Executing a known GQI query over WebSocket with paging (`OpenQuerySessionAsync`) |

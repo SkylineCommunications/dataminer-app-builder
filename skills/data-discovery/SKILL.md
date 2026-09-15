@@ -13,7 +13,7 @@ GQI is for data that is **NOT** available through the standard DataMiner Web API
 
 The full flow is two steps:
 
-1. **Discover**: As an agent step, authenticate to DataMiner and run a Node.js script that calls `CreateAIGeneratedQuery` (NL2GQI) directly. The agent captures the discovered query object from the script output — no user action needed.
+1. **Discover**: As an agent step, authenticate to DataMiner and run a Node.js script that calls `CreateAIGeneratedQuery` (NL2GQI) directly. The agent captures the discovered query object from the script output; the user only enters their password directly in the terminal when prompted.
 2. **Build**: Hardcode the discovered query into the production app and execute it using `OpenQuerySessionAsync`. See the **execute-query** skill for the full production execution flow.
 
 Official references:
@@ -45,12 +45,12 @@ After calling `CreateAIGeneratedQuery`, subscribe via WebSocket:
 
 ## Step 1 — Discover the query (fully agent-orchestrated)
 
-The agent executes the entire discovery process. The user provides their DataMiner host and credentials once; the agent handles everything else.
+The agent executes the entire discovery process. The user provides the DataMiner host and username, then enters the password directly in the terminal when prompted; the agent handles everything else. Never ask the user to send a password, token, or other secret through chat.
 
 **Agent procedure:**
 
-1. Ask the user for their DataMiner host URL (e.g. `http://my-dma` or `https://my-dma`) and their DataMiner username and password
-2. Authenticate via `ConnectAppAndInfo` using PowerShell — capture the connection GUID from `d.Connection`.
+1. Ask the user for their DataMiner host URL (e.g. `http://my-dma` or `https://my-dma`) and username. Do not ask for the password in chat.
+2. Start the PowerShell authentication flow and have the user enter the password directly into the terminal. Capture the connection GUID from `d.Connection` without printing the password or connection value.
 
    **Exact request body** (all fields are required; `host` must be present as an empty string):
 
@@ -102,6 +102,18 @@ The HTTP response `d` is `null` — the generated query arrives via **WebSocket*
 5. Receive `DMAEvent` via WebSocket — `Data.Message` is the generated query object
 
 Once the query is discovered in step 5, proceed to the **execute-query** skill to open a session and fetch rows (steps 6–9 of the full flow: `OpenQuerySessionAsync` → `GetEvents` → `GetNextQuerySessionPage` → accumulate rows).
+
+### Required discovery output for app creation
+
+Discovery is complete only after the agent has both the generated query and a representative result page. Before implementation, record:
+
+- the complete query object that production will pass to `OpenQuerySessionAsync`;
+- returned column names, types, indices, and stable identifiers;
+- null, empty, and special-value behavior observed in the rows;
+- a small sanitized representative row set for Playwright fixtures;
+- the mapping from query columns to the app's view model and requested UI features.
+
+The Playwright suite must mock the exact `OpenQuerySessionAsync` and WebSocket paging flow for this query using the sanitized result shape. Discovery scripts and credentials remain agent-side and must never be included in production code or test fixtures.
 
 > **Race condition warning:** The WebSocket message listener must be registered BEFORE calling `CreateAIGeneratedQuery`, but `GetEvents` must be sent AFTER the HTTP call returns (the server-side queue doesn't exist until the HTTP call creates it).
 
