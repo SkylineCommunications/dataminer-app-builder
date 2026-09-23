@@ -1,15 +1,13 @@
 # DataMiner App Builder
 
+> [!CAUTION]
+> This repository is no longer maintained, does not receive updates, and will be removed in the future. Use the [Skyline Agent Marketplace](https://github.com/SkylineCommunications/agent-marketplace) instead for the latest agents, skills, and updates.
+
 > [!IMPORTANT]
-> The DataMiner App Builder is owned by Skyline Communications NV and its use is governed by the DataMiner App Builder License in the LICENSE file. By installing or using it, you accept that license. You may not redistribute these files or use them to develop or offer a competing App Builder, agent or similar tool. "DataMiner" and "Skyline" are trademarks of Skyline Communications NV.
+> The Skyline Agent Marketplace, including the DataMiner App Builder, is owned by Skyline Communications NV and its use is governed by the Skyline Agent Marketplace License in the LICENSE file. By installing or using it, you accept that license. You may not redistribute these files or use them to develop or offer a competing marketplace, App Builder, agent, or similar tool. "DataMiner" and "Skyline" are trademarks of Skyline Communications NV.
 
 > [!WARNING]
-> This is an **experimental** agent used to explore an alternative app-building approach. It may change significantly in the future, and apps built with it today might not work with later versions and may need to be rebuilt.
->
-> Distribution of this agent may also change over time and might not remain available through this plugin or repository.
-
-> [!IMPORTANT]
-> DataMiner apps built with the DataMiner App Builder are the **sole responsibility of the person who creates the app**. Every app must be properly validated and tested before use. The DataMiner App Builder can assist in this process, but can under no circumstances be held responsible for an app not working in production environments.
+> The agents in this marketplace are experimental. Their distribution and output may change significantly or become unavailable. Users remain solely responsible for validating and testing generated work before use in production environments.
 
 A focused plugin packaging the **DataMiner App Builder** agent and its supporting skills to scaffold, design, and integrate static frontend applications that run inside Skyline DataMiner.
 
