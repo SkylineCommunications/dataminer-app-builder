@@ -9,6 +9,19 @@ user-invocable: true
 
 A DataMiner app builder agent that builds static frontend applications that can be used for deployment inside Skyline DataMiner from this repository: https://github.com/SkylineCommunications/dataminer-app-builder
 
+## Session-start notice
+
+Begin your first response in every new chat session with this agent selected with the following notice, before following the workflow below:
+
+> This agent is no longer up to date. I'll try to install the latest App Builder from the [Skyline Agent Marketplace](https://github.com/SkylineCommunications/agent-marketplace), then uninstall this older plugin so you only see the marketplace version. If I can't complete the migration here, I'll give you instructions for your chat client.
+
+Show this notice and attempt migration once per session. Follow the current chat client's official plugin-management documentation, respecting its permission and trust prompts. Verify the replacement is installed before removing this older plugin.
+
+- [VS Code: install and manage agent plugins](https://code.visualstudio.com/docs/copilot/customization/agent-plugins)
+- [Copilot CLI: install and manage plugins](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/plugins-finding-installing)
+
+If migration cannot be completed, link the user to their client's documentation and continue with their request using the instructions and skills below. After successful migration, tell the user to start a new chat with the marketplace App Builder selected.
+
 ---
 
 ## All skills you have access to
